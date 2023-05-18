@@ -1,1 +1,1487 @@
 
+import { useContext } from "react";
+import { useState, useEffect } from "react";
+import { Button } from "react-bootstrap";
+import Card from "react-bootstrap/Card";
+import Container from "react-bootstrap/Container";
+import useFetchData from "../../Hooks/useFetchData";
+import { ExampleContext } from "../../context/exampleContext/Index";
+import "../../App.css";
+import { useNavigate } from "react-router-dom";
+
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from "react-responsive-carousel";
+
+const Index = () => {
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+
+  const { value, setValue } = useContext(ExampleContext);
+  const { newGames } = useFetchData();
+  const mutedGames = ["tetris", "RoadFighter"];
+  const [count, setCount] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(null);
+  const navigate = useNavigate();
+
+  const checkMuted = (name) => {
+    if (mutedGames.includes(name)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const playGame = (name) => {
+    navigate(`/About/${name}`);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newIndex = Math.floor(Math.random() * 5);
+      setActiveIndex(newIndex);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // console.log("in", activeIndex);
+  // const div = Array.from({ length: 5 }, (_, index) => (
+  //   <div key={index} className={activeIndex === index ? "active" : ""}></div>
+  // ));
+
+  return (
+    <>
+      <Container>
+        <h1>Home</h1>
+        <h2>{value}</h2>
+        <Button onClick={() => setValue("Hi! \n I'm from Context")}>
+          Click me to see the Magic!
+        </Button>
+
+        <div className="d-flex ">
+          {newGames?.data?.map((item, index) => {
+            // Array.from({ length: index }, (_, index) => (
+            console.log(activeIndex, index);
+            return (
+              <div
+                key={index}
+                className={`${activeIndex === index ? "active" : ""}`}
+              >
+                <Card
+                  key={index}
+                  style={{ width: "15rem" }}
+                  onClick={() => {
+                    playGame(item?.name);
+                  }}
+                >
+                  {checkMuted(item?.name) ? (
+                    <div className="comingSoon"></div>
+                  ) : (
+                    ""
+                  )}
+                  <Card.Img
+                    variant="top"
+                    src={item.thumbnail}
+                    alt={item.thumbnailAlt}
+                  />
+                  <Card.Body>
+                    <Card.Title>{item.name}</Card.Title>
+                    {item?.stages[index]?.price ? (
+                      <Card.Text>
+                        Price of Games: {item?.stages[index]?.price}
+                      </Card.Text>
+                    ) : (
+                      <Card.Text>No Prices alloted</Card.Text>
+                    )}
+                    <Button variant="primary">
+                      Total Played: {item.totalPlayed}
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </div>
+            );
+            // ));
+          })}
+        </div>
+
+        {/* 
+    <div class="tabsBlog">
+        <nav>
+          <div class="nav nav-tabs websiteTabs" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="inner1-tab" data-bs-toggle="tab" data-bs-target="#Maininner1" type="button" role="tab" aria-controls="inner1" aria-selected="true">Website</button>
+            <button class="nav-link" id="inner2-tab" data-bs-toggle="tab" data-bs-target="#Maininner2" type="button" role="tab" aria-controls="inner2" aria-selected="false">Logo</button>
+          </div>
+        </nav>
+
+        <div class="tab-content parent-tab" id="nav-tabContent">
+                <div class="tab-pane fade active show" id="Maininner1" role="tabpanel" aria-labelledby="innertab1">
+                    <div class="card ">
+                      <nav>
+                        <div class="nav nav-tabs secondTabs" id="nav-tab" role="tablist">
+                          <button class="nav-link active" id="innertab1" data-bs-toggle="tab" data-bs-target="#inner1" type="button" role="tab" aria-controls="inner1" aria-selected="true">Ecommerce</button>
+                          <button class="nav-link" id="innertab2" data-bs-toggle="tab" data-bs-target="#inner2" type="button" role="tab" aria-controls="inner2" aria-selected="false">Corporate</button>
+                        </div>
+                      </nav>
+                    </div>
+                </div>
+                <div class="tab-pane fade " id="Maininner2" role="tabpanel" aria-labelledby="innertab2">
+                    <div class="card listBtns">
+                    <nav>
+                      <div class="nav nav-tabs secondTabs" id="nav-tab" role="tablist">
+                        <button class="nav-link active" id="innertab1" data-bs-toggle="tab" data-bs-target="#inner1" type="button" role="tab" aria-controls="inner1" aria-selected="true">Ecommerce</button>
+                        <button class="nav-link" id="innertab2" data-bs-toggle="tab" data-bs-target="#inner2" type="button" role="tab" aria-controls="inner2" aria-selected="false">Corporate</button>
+                      </div>
+                    </nav>
+                </div>
+              </div>
+            <div class="tab-content child-tab" id="nav-tabContent">
+                <div class="tab-pane fade active show" id="inner1" role="tabpanel" aria-labelledby="inner1">
+                    <div class="grid">
+                        <article class="article">
+                          <figure class="article__figure"><img class="article__cover" src="https://picsum.photos/id/60/600/300"/>
+                            <figcaption class="article__caption">
+                              <h2 class="article__title">Card Title</h2>
+                              <p class="article__info">Princes Victoria</p>
+                            </figcaption>
+                          </figure>
+                        </article>
+                        <article class="article">
+                          <figure class="article__figure"><img class="article__cover" src="https://picsum.photos/id/80/600/300"/>
+                            <figcaption class="article__caption">
+                              <h2 class="article__title">Card Title</h2>
+                              <p class="article__info">Princes Victoria</p>
+                            </figcaption>
+                          </figure>
+                        </article>
+                        <article class="article">
+                          <figure class="article__figure"><img class="article__cover" src="https://picsum.photos/id/100/600/300"/>
+                            <figcaption class="article__caption">
+                              <h2 class="article__title">Card Title</h2>
+                              <p class="article__info">Princes Victoria</p>
+                            </figcaption>
+                          </figure>
+                        </article>
+                        <article class="article">
+                          <figure class="article__figure"><img class="article__cover" src="https://picsum.photos/id/120/600/300"/>
+                            <figcaption class="article__caption">
+                              <h2 class="article__title">Card Title</h2>
+                              <p class="article__info">Victoria Princes</p>
+                            </figcaption>
+                          </figure>
+                        </article>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="inner2" role="tabpanel" aria-labelledby="inner2">
+                    <div class="grid">
+                        <article class="article">
+                          <figure class="article__figure"><img class="article__cover" src="https://picsum.photos/id/80/600/300"/>
+                            <figcaption class="article__caption">
+                              <h2 class="article__title">Card Title</h2>
+                              <p class="article__info">Princes Victoria</p>
+                            </figcaption>
+                          </figure>
+                        </article>
+                        <article class="article">
+                          <figure class="article__figure"><img class="article__cover" src="https://picsum.photos/id/100/600/300"/>
+                            <figcaption class="article__caption">
+                              <h2 class="article__title">Card Title</h2>
+                              <p class="article__info">Princes Victoria</p>
+                            </figcaption>
+                          </figure>
+                        </article>
+                        <article class="article">
+                          <figure class="article__figure"><img class="article__cover" src="https://picsum.photos/id/120/600/300"/>
+                            <figcaption class="article__caption">
+                              <h2 class="article__title">Card Title</h2>
+                              <p class="article__info">Victoria Princes</p>
+                            </figcaption>
+                          </figure>
+                        </article>
+                        <article class="article">
+                          <figure class="article__figure"><img class="article__cover" src="https://picsum.photos/id/60/600/300"/>
+                            <figcaption class="article__caption">
+                              <h2 class="article__title">Card Title</h2>
+                              <p class="article__info">Princes Victoria</p>
+                            </figcaption>
+                          </figure>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> */}
+
+        <div class="   tabsBlog ">
+          <nav>
+            <div class="nav nav-tabs websiteTabs" id="nav-tab" role="tablist">
+              <button
+                class="nav-link active"
+                id="inner1-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#Maininner1"
+                type="button"
+                role="tab"
+                aria-controls="inner1"
+                aria-selected="true"
+              >
+                Website
+              </button>
+              <button
+                class="nav-link"
+                id="inner2-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#Maininner2"
+                type="button"
+                role="tab"
+                aria-controls="inner2"
+                aria-selected="false"
+              >
+                Logo
+              </button>
+              <button
+                class="nav-link"
+                id="inner3-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#Maininner3"
+                type="button"
+                role="tab"
+                aria-controls="inner3"
+                aria-selected="false"
+              >
+                Social Media
+              </button>
+              <button
+                class="nav-link"
+                id="inner4-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#Maininner4"
+                type="button"
+                role="tab"
+                aria-controls="inner4"
+                aria-selected="false"
+              >
+                Print Work
+              </button>
+              <button
+                class="nav-link"
+                id="inner5-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#Maininner5"
+                type="button"
+                role="tab"
+                aria-controls="inner5"
+                aria-selected="false"
+              >
+                Package designing
+              </button>
+            </div>
+          </nav>
+
+          <div class="tab-content parent-tab" id="nav-tabContent">
+            <div
+              class="tab-pane fade active show"
+              id="Maininner1"
+              role="tabpanel"
+              aria-labelledby="innertab1"
+            >
+              <div class="card ">
+                <nav>
+                  <div
+                    class="nav nav-tabs secondTabs"
+                    id="nav-tab"
+                    role="tablist"
+                  >
+                    <button
+                      class="nav-link active"
+                      id="innertab1"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner1"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner1"
+                      aria-selected="true"
+                    >
+                      Ecommerce
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab2"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner2"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner2"
+                      aria-selected="false"
+                    >
+                      Corporate
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab3"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner3"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner3"
+                      aria-selected="false"
+                    >
+                      Educational
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab4"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner4"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner4"
+                      aria-selected="false"
+                    >
+                      Religious
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab5"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner5"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner5"
+                      aria-selected="false"
+                    >
+                      Tech
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab6"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner6"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner6"
+                      aria-selected="false"
+                    >
+                      Real estate
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab7"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner7"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner7"
+                      aria-selected="false"
+                    >
+                      Fashion
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab8"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner8"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner8"
+                      aria-selected="false"
+                    >
+                      sport
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab9"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner9"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner9"
+                      aria-selected="false"
+                    >
+                      portal
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab10"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner10"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner10"
+                      aria-selected="false"
+                    >
+                      law
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab11"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner11"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner11"
+                      aria-selected="false"
+                    >
+                      Health
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab12"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner12"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner12"
+                      aria-selected="false"
+                    >
+                      Hotel / Travel
+                    </button>
+                  </div>
+                </nav>
+                <div class="tab-content child-tab" id="nav-tabContent">
+                  <div
+                    class="tab-pane fade active show"
+                    id="inner1"
+                    role="tabpanel"
+                    aria-labelledby="inner1"
+                  >
+                    <div class="grid">
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/60/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/80/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/100/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/120/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Victoria Princes</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                    </div>
+                  </div>
+
+                  <div
+                    class="tab-pane fade  "
+                    id="inner2"
+                    role="tabpanel"
+                    aria-labelledby="inner2"
+                  >
+                    <div class="grid">
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/80/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/100/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/120/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Victoria Princes</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="tab-pane fade "
+              id="Maininner2"
+              role="tabpanel"
+              aria-labelledby="innertab2"
+            >
+              <div class="card listBtns">
+                <nav>
+                  <div
+                    class="nav nav-tabs secondTabs"
+                    id="nav-tab"
+                    role="tablist"
+                  >
+                    <button
+                      class="nav-link active"
+                      id="innertab11"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner11"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner11"
+                      aria-selected="true"
+                    >
+                      Ecommerce
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab22"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner22"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner22"
+                      aria-selected="false"
+                    >
+                      Corporate
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab3"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner3"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner3"
+                      aria-selected="false"
+                    >
+                      Educational
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab4"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner4"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner4"
+                      aria-selected="false"
+                    >
+                      Religious
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab5"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner5"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner5"
+                      aria-selected="false"
+                    >
+                      Tech
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab6"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner6"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner6"
+                      aria-selected="false"
+                    >
+                      Real estate
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab7"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner7"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner7"
+                      aria-selected="false"
+                    >
+                      Fashion
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab8"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner8"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner8"
+                      aria-selected="false"
+                    >
+                      sport
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab9"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner9"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner9"
+                      aria-selected="false"
+                    >
+                      portal
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab10"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner10"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner10"
+                      aria-selected="false"
+                    >
+                      law
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab11"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner11"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner11"
+                      aria-selected="false"
+                    >
+                      Health
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab12"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner12"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner12"
+                      aria-selected="false"
+                    >
+                      Hotel / Travel
+                    </button>
+                  </div>
+                </nav>
+                <div class="tab-content child-tab" id="nav-tabContent">
+                  <div
+                    class="tab-pane fade active show"
+                    id="inner11"
+                    role="tabpanel"
+                    aria-labelledby="inner11"
+                  >
+                    <div class="grid">
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/60/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/80/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/100/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/120/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Victoria Princes</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="tab-pane fade  "
+              id="Maininner2"
+              role="tabpanel"
+              aria-labelledby="innertab2"
+            >
+              <div class="">
+                <nav>
+                  <div
+                    class="nav nav-tabs websiteTabs"
+                    id="nav-tab"
+                    role="tablist"
+                  >
+                    <button
+                      class="nav-link active"
+                      id="innertab1"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner22"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner22"
+                      aria-selected="true"
+                    >
+                      Ecommerce
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab2"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner2"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner2"
+                      aria-selected="false"
+                    >
+                      Corporate
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab3"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner3"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner3"
+                      aria-selected="false"
+                    >
+                      Educational
+                    </button>
+                  </div>
+                </nav>
+                <div class="tab-content child-tab" id="nav-tabContent">
+                  <div
+                    class="tab-pane fade active show"
+                    id="inner22"
+                    role="tabpanel"
+                    aria-labelledby="inner22"
+                  >
+                    <div class="grid">
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/60/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/80/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/100/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/120/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Victoria Princes</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="tab-pane fade  "
+              id="Maininner3"
+              role="tabpanel"
+              aria-labelledby="innertab3"
+            >
+              <div class="card ">
+                <nav>
+                  <div
+                    class="nav nav-tabs secondTabs"
+                    id="nav-tab"
+                    role="tablist"
+                  >
+                    <button
+                      class="nav-link active"
+                      id="innertab1"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner1"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner1"
+                      aria-selected="true"
+                    >
+                      Ecommerce
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab2"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner2"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner2"
+                      aria-selected="false"
+                    >
+                      Corporate
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab3"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner3"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner3"
+                      aria-selected="false"
+                    >
+                      Educational
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab4"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner4"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner4"
+                      aria-selected="false"
+                    >
+                      Religious
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab5"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner5"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner5"
+                      aria-selected="false"
+                    >
+                      Tech
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab6"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner6"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner6"
+                      aria-selected="false"
+                    >
+                      Real estate
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab7"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner7"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner7"
+                      aria-selected="false"
+                    >
+                      Fashion
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab8"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner8"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner8"
+                      aria-selected="false"
+                    >
+                      sport
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab9"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner9"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner9"
+                      aria-selected="false"
+                    >
+                      portal
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab10"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner10"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner10"
+                      aria-selected="false"
+                    >
+                      law
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab11"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner11"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner11"
+                      aria-selected="false"
+                    >
+                      Health
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab12"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner12"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner12"
+                      aria-selected="false"
+                    >
+                      Hotel / Travel
+                    </button>
+                  </div>
+                </nav>
+
+                <div class="tab-content child-tab" id="nav-tabContent">
+                  <div
+                    class="tab-pane fade active show"
+                    id="inner11"
+                    role="tabpanel"
+                    aria-labelledby="inner11"
+                  >
+                    <div class="grid">
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/60/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/80/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/100/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/120/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Victoria Princes</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="tab-pane fade  "
+              id="Maininner4"
+              role="tabpanel"
+              aria-labelledby="innertab4"
+            >
+              <div class="card ">
+                <nav>
+                  <div
+                    class="nav nav-tabs websiteTabs"
+                    id="nav-tab"
+                    role="tablist"
+                  >
+                    <button
+                      class="nav-link active"
+                      id="innertab4"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner1"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner1"
+                      aria-selected="true"
+                    >
+                      Ecommerce
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab2"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner2"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner2"
+                      aria-selected="false"
+                    >
+                      Corporate
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab3"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner3"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner3"
+                      aria-selected="false"
+                    >
+                      Educational
+                    </button>
+                  </div>
+                </nav>
+                <div class="tab-content child-tab" id="nav-tabContent">
+                  <div
+                    class="tab-pane fade active show"
+                    id="inner11"
+                    role="tabpanel"
+                    aria-labelledby="inner11"
+                  >
+                    <div class="grid">
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/60/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/80/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/100/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/120/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Victoria Princes</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="tab-pane fade  "
+              id="Maininner5"
+              role="tabpanel"
+              aria-labelledby="innertab5"
+            >
+              <div class="card ">
+                <nav>
+                  <div
+                    class="nav nav-tabs websiteTabs"
+                    id="nav-tab"
+                    role="tablist"
+                  >
+                    <button
+                      class="nav-link active"
+                      id="innertab5"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner1"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner1"
+                      aria-selected="true"
+                    >
+                      Ecommerce
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab2"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner2"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner2"
+                      aria-selected="false"
+                    >
+                      Corporate
+                    </button>
+                    <button
+                      class="nav-link"
+                      id="innertab3"
+                      data-bs-toggle="tab"
+                      data-bs-target="#inner3"
+                      type="button"
+                      role="tab"
+                      aria-controls="inner3"
+                      aria-selected="false"
+                    >
+                      Educational
+                    </button>
+                  </div>
+                </nav>
+                <div class="tab-content child-tab" id="nav-tabContent">
+                  <div
+                    class="tab-pane fade active show"
+                    id="inner11"
+                    role="tabpanel"
+                    aria-labelledby="inner11"
+                  >
+                    <div class="grid">
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/60/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/80/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/100/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Princes Victoria</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                      <article class="article">
+                        <figure class="article__figure">
+                          <img
+                            class="article__cover"
+                            src="https://picsum.photos/id/120/600/300"
+                          />
+                          <figcaption class="article__caption">
+                            <h2 class="article__title">Card Title</h2>
+                            <p class="article__info">Victoria Princes</p>
+                          </figcaption>
+                        </figure>
+                      </article>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* marqueeeee */}
+
+        {/* $(function() {
+    $('marquee').mouseover(function() {
+        $(this).attr('scrollamount',0);
+    }).mouseout(function() {
+         $(this).attr('scrollamount',5);
+    });
+}); */}
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="vertical-carousel">
+              <Carousel axis="vertical" infiniteLoop="true" verticalSwipe="standard" dots="true" showArrows="false" showIndicators="false" labels="false" 	>
+                <div class="carousel-card">
+                  <h3>This is heading</h3>
+                  <h4>
+                    this is a large heading hvaing bold text heading hvaing bold
+                    text
+                  </h4>
+                  <button>Book Appoinment</button>
+                </div>
+                <div class="carousel-card">
+                  <h3>This is heading</h3>
+                  <h4>
+                    this is a large heading hvaing bold text heading hvaing bold
+                    text
+                  </h4>
+                  <button>Book Appoinment</button>
+                </div>
+                <div class="carousel-card">
+                  <h3>This is heading</h3>
+                  <h4>
+                    this is a large heading hvaing bold text heading hvaing bold
+                    text
+                  </h4>
+                  <button>Book Appoinment</button>
+                </div>
+                <div class="carousel-card">
+                  <h3>This is heading</h3>
+                  <h4>
+                    this is a large heading hvaing bold text heading hvaing bold
+                    text
+                  </h4>
+                  <button>Book Appoinment</button>
+                </div>
+              </Carousel>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <marquee
+              behavior="scroll"
+              direction="up"
+              scrollamount="10"
+              loop="1"
+            >
+              <div class="marqueeMain">
+                <h3>This is heading</h3>
+                <h4>Sohail Ghafor</h4>
+                <p>
+                  This text will scroll from bottom to up scroll from bottom to
+                  up scroll from bottom to up
+                </p>
+              </div>
+
+              <div class="marqueeMain">
+                <h3>This is heading</h3>
+                <h4>Sohail Ghafor</h4>
+                <p>
+                  This text will scroll from bottom to up scroll from bottom to
+                  up scroll from bottom to up
+                </p>
+              </div>
+
+              <div class="marqueeMain">
+                <h3>This is heading</h3>
+                <h4>Sohail Ghafor</h4>
+                <p>
+                  This text will scroll from bottom to up scroll from bottom to
+                  up scroll from bottom to up
+                </p>
+              </div>
+
+              <div class="marqueeMain">
+                <h3>This is heading</h3>
+                <h4>Sohail Ghafor</h4>
+                <p>
+                  This text will scroll from bottom to up scroll from bottom to
+                  up scroll from bottom to up
+                </p>
+              </div>
+            </marquee>
+          </div>
+        </div>
+        {/* marqueeeee */}
+      </Container>
+
+      {/* card with bg */}
+      <div class="cardBgMain">
+        <div class="cardbg text-center">
+          <h3>This is heading</h3>
+          <h4>this is a large heading hvaing bold text</h4>
+          <button>Book Appoinment</button>
+        </div>
+      </div>
+
+      {/* card with bg  end */}
+
+      <div class="cardbg text-left">
+        <h3>This is heading</h3>
+        <h4>this is a large heading hvaing bold text</h4>
+        <button>Book Appoinment</button>
+      </div>
+
+      {/* card with bg  left endddddd */}
+
+      <section className="colorCards-sec pink">
+        <Container>
+          <div class="row ">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-6 p-0 m-0">
+                  <div class="colorfullCard">
+                    <i class="fa fa-external-link" aria-hidden="true"></i>
+                    <h6>This is heading</h6>
+                    <p>this is a large heading hvaing bold text</p>
+                  </div>
+                  <div class="colorfullCard">
+                    <i class="fa fa-external-link" aria-hidden="true"></i>
+                    <h6>This is heading</h6>
+                    <p>this is a large heading hvaing bold text</p>
+                  </div>
+                </div>
+                <div class="col-md-6 p-0 m-0">
+                  <div class="colorfullCard">
+                    <i class="fa fa-external-link" aria-hidden="true"></i>
+                    <h6>This is heading</h6>
+                    <p>this is a large heading hvaing bold text</p>
+                  </div>
+                  <h2 class="absoluteHeading">Packages</h2>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <h2 class="mt-100"> Lorem ipsum is a placeholder dummy text. </h2>
+            </div>
+          </div>
+        </Container>
+      </section>
+    </>
+  );
+};
+
+export default Index;
