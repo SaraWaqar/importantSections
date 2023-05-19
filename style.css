@@ -448,6 +448,59 @@ h2.absoluteHeading {
 
 
 /* slick slider */
+
+.vertical-carousel .carousel .control-dots .dot {
+  transition: opacity .25s ease-in;
+  box-shadow: none;
+  background: orange;
+  width: 3px;
+  height: 20px;
+  cursor: pointer;
+  display: block;
+  margin: 10px 0;
+  border-radius: 0;
+}
+.vertical-carousel .carousel .control-dots{
+  width: auto;
+}
+.carousel-card{
+  text-align: left;
+  padding-left: 30px;
+}
+.carousel.carousel-slider .control-arrow{
+  display: block;
+}
+section.gray-sec-img .row {
+  display: flex;
+  text-align: left;
+  align-items: center;
+  padding: 15px;
+  border-radius: 5px;
+  margin: 70px auto;
+}
+
+img.little-top {
+  margin-top: -40px;
+  border-radius: 6px;
+}
+.odd-even .row:nth-child(odd) {
+  background: #fff;
+
+}
+
+.odd-even .row:nth-child(even) {
+  background: #f8f8f8;
+
+}
+.sec-border {
+  padding: 50px 0;
+  border-top: 2px solid #a0a0a0;
+  border-bottom: 2px solid #a0a0a0;
+  margin: 50px auto;
+}
+
+
+/* slick slider */
 @media(max-width: 767px){
   .websiteTabs button.nav-link{
     padding: 0;
