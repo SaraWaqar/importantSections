@@ -2389,7 +2389,7 @@ const Index = () => {
                 data-aos-duration={1700}
               >
                 <div className="contactRight">
-                  <h5>STAY CONNECTED WITH react</h5>
+                  <h5>STAY CONNECTED WITH react sarawaqar</h5>
                   <h3>Are you facing any problem?</h3>
                   <h2>We are always there to solve it.</h2>
                   <div className="formHeading contact-field newContact">
